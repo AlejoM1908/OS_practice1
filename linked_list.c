@@ -53,6 +53,15 @@ int length(struct LinkedList* list){
 }
 
 /**
+* The function freeNode is used to free the dynamic memory assigned to
+* the paramether node
+* @param node is a pointer to the node we want to apply the function to
+*/
+void freeNode(struct Node* node){
+    free(node);
+}
+
+/**
 * The function addFront is used to insert a new node with a value in the
 * HEAD of the list
 * @param list is a pointer to the list we want to apply the function to
@@ -189,7 +198,7 @@ int delete(struct LinkedList* list, struct Node* node){
     }
 
     //Searching for the node before the one to delete
-    Node* temp = list -> head
+    Node* temp = list -> head;
 
     while (temp -> next != node || temp -> next != NULL){
         temp = temp -> next;
@@ -234,15 +243,6 @@ int deleteFront(struct LinkedList* list){
 */
 int deleteBack(struct LinkedList* list){
     return delete(list, list -> tail);
-}
-
-/**
-* The function freeNode is used to free the dynamic memory assigned to
-* the paramether node
-* @param node is a pointer to the node we want to apply the function to
-*/
-void freeNode(struct Node* node){
-    free(node);
 }
 
 /**

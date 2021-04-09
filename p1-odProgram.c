@@ -13,5 +13,6 @@ int main(void)
         printf("already something in the list");
     }
 
+    freeList(list);
     return 0;
 }
