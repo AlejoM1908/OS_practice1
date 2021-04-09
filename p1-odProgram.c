@@ -1,13 +1,17 @@
 #include <stdio.h>
 #include "linked_list.c"
 
-int main() 
+int main(void) 
 {
-    struct linked_list list;
+    LinkedList* list = init();
 
-    addFront(list*, 12);
-
-    printf(list.head.data);
+    if (isEmpty(list)){
+        addFront(list, 12);
+        printf("added 12 to the list");
+    }
+    else{
+        printf("already something in the list");
+    }
 
     return 0;
 }
