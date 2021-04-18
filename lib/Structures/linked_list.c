@@ -28,11 +28,12 @@ LinkedList* init(){
     // Assigning the dynamic space for the list
     LinkedList* list = malloc(sizeof(LinkedList));
 
-    // Initializing the value of the list
+    // Initializing the values of the list
     list -> head = NULL;
     list -> tail = NULL;
     list -> size = 0;
 
+    //Returning the pointer
     return list;
 }
 
