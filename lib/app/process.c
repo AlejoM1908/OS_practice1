@@ -29,6 +29,30 @@ void checkErrors(int processId, int pipesPointers[2]){
     }
 }
 
+void loadHash(HashTable* hash){
+    FILE* file = fopen("lib/data/hashData.txt", "r");
+    int key;
+    long int data;
+    char buffer[20];
+    char* token;
+
+    if (file == NULL){
+        perror("No se pudo encontrar el archivo del hash para fopen");
+        exit(EXIT_FAILURE);
+    }
+
+    while(fgets(buffer, 20, file) != NULL){
+        token = strtok(buffer,",");
+        key = atoi(token);
+        token = strtok(NULL,",");
+        data = (long int) atoi(token);
+
+        if (!exist(hash,key)){
+            insert(hash, key, data);
+        }
+    }
+}
+
 /**
  * The function searchInFile is used to search the file pointer in the HashTable and
  * find the mean travel time in the file
@@ -39,8 +63,10 @@ void checkErrors(int processId, int pipesPointers[2]){
  * @return the mean time for the given data
 */
 int searchInFile(HashTable* table, int source, int dest, int hour){
-    FILE* file = fopen("../../data.csv", "r");
-    int check;
+    FILE* file = fopen("lib/data/data.txt", "r");
+    int check, src, dst, time, mean_time;
+    char buffer[30];
+    char* token;
 
     if (file == NULL){
         perror("No se pudo encontrar el archivo para fopen");
@@ -52,12 +78,29 @@ int searchInFile(HashTable* table, int source, int dest, int hour){
         exit(EXIT_FAILURE);
     }
 
-    int pointer = get(table, source);
+    long int pointer = get(table, source);
+
+    if (pointer < 0) return -1;
+
     check = fseek(file, pointer, SEEK_SET);
 
     if (check < 0){
         perror("No se pudo desplazar el puntero con fseek");
         exit(EXIT_FAILURE);
+    }
+
+    while (fgets(buffer, 30, file) != NULL){
+        token = strtok(buffer,",");
+        src = atoi(token);
+        token = strtok(NULL,",");
+        dst = atoi(token);
+        token = strtok(NULL,",");
+        time = atoi(token);
+        token = strtok(NULL,",");
+        mean_time = atoi(token);
+
+        if (src != source) return -1;
+        else if (dst == dest && time == hour) return mean_time;
     }
 }
 
@@ -69,9 +112,12 @@ int searchInFile(HashTable* table, int source, int dest, int hour){
 */
 void childrenFunction(int pipeWrite, int pipeRead){
     // Allocating the needed memory
-    HashTable *table = initHash();
+    HashTable* table = initHash();
     int source, destiny, time, check, data;
     bool exit = false;
+
+    loadHash(table);
+    printf("carga del hash -> %s", size(table));
 
     // Generaing a loop for keep the program runing until the user stops it
     while(!exit){
