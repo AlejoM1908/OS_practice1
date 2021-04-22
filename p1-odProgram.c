@@ -1,7 +1,8 @@
 #include <stdio.h>
-#include "lib/structures/hash_table.c"
+#include "lib/app/process.c"
 
-int main(void) 
+int main(void)
 {
+    startProgram();
     return 0;
 }

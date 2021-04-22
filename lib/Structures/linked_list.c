@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 /**
@@ -7,7 +8,7 @@
 */
 typedef struct Node{
     int key;
-    int data[2];
+    long int data;
     struct Node* next;
 } Node;
 
@@ -69,13 +70,13 @@ void freeNode(struct Node* node){
 * in the HEAD of the list
 * @param list is a pointer to the list we want to apply the function to
 * @param key is the key stored in the new node
-* @param data is the data stored in the new node
+* @param value is the data stored in the new node
 */
-void addFront(struct LinkedList* list, int key, int data){
+void addFront(struct LinkedList* list, int key, long int value){
     // Assigning the dynamic space for the new node and storing the key and data
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
     newNode -> key = key;
-    newNode -> data[0] = data;
+    newNode -> data = value;
     
     // Checking if the list is empty
     if (list -> size == 0){
@@ -95,13 +96,13 @@ void addFront(struct LinkedList* list, int key, int data){
 * TAIL of the list
 * @param list is a pointer to the list we want to apply the function to
 * @param key is the key stored in the new node
-* @param data is the data stored in the new node
+* @param value is the data stored in the new node
 */
-void addBack(struct LinkedList* list, int key, int data){
+void addBack(struct LinkedList* list, int key, long int value){
     // Assigning the dynamic space for the new node and storing the key and data
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
     newNode -> key = key;
-    newNode -> data[0] = data;
+    newNode -> data = value;
     newNode -> next = NULL;
     
     // Checking if the list is empty
@@ -141,7 +142,7 @@ int showBack(struct LinkedList* list){
 * @param node is the pointer to the node we want the info from
 * @return the array of data store in the node
 */
-int* showNode(struct Node* node){
+long int showNode(struct Node* node){
     if (node != NULL)
         return node -> data;
 }
@@ -223,8 +224,6 @@ int delete(struct LinkedList* list, struct Node* node){
         
     }
 
-    //if (temp == list -> head)
-        //printf("temp es la cabeza");
     //Checking if finding the parent of the node was successful
     if (temp -> next == NULL)
         return -1;
@@ -271,11 +270,11 @@ int deleteBack(struct LinkedList* list){
 * with the assigned key
 * @param list is a pointer to the list we want to apply the function to
 * @param key is the key stored in the new node
-* @param data is the data stored in the new node
+* @param value is the data stored in the new node
 */
-void updateData(struct LinkedList* list, int key, int value){
+void updateData(struct LinkedList* list, int key, long int value){
     if (!exists(list, key))
-        find(list, key) -> data[0] = value;
+        find(list, key) -> data = value;
 }
 
 /**
