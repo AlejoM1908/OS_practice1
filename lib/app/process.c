@@ -117,7 +117,6 @@ void childrenFunction(int pipeWrite, int pipeRead){
     bool exit = false;
 
     loadHash(table);
-    printf("carga del hash -> %s", size(table));
 
     // Generaing a loop for keep the program runing until the user stops it
     while(!exit){
