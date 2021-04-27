@@ -17,30 +17,40 @@ void checkErrors(int processId, int pipesPointers[2]){
             // Generating the corresponding error message for pipe error
             char message[] = "Error en la generación de la pipe ";
             strcat(message, (char*) &i);
-            perror(message);
-            exit(EXIT_FAILURE);
+            printf(message);
+            exit(1);
         }
     }
 
     // Generating the corresponding error message for the fork
-    if (processId == -1){
-        perror("Error en la generación del fork");
-        exit(EXIT_FAILURE);
+    if (processId < 0){
+        printf("Error en la generación del fork");
+        exit(2);
     }
 }
 
+/**
+ * The function loadHash is used to load the needed information into the 
+ * hash table used in the search
+ * @param hash where the data is going to be loaded
+*/
 void loadHash(HashTable* hash){
+    // Pointer to the hash data file
     FILE* file = fopen("lib/data/hashData.txt", "r");
+
+    // Creating other needed variables
     int key;
     long int data;
     char buffer[20];
     char* token;
 
+    // Cheking if the file exists
     if (file == NULL){
-        perror("No se pudo encontrar el archivo del hash para fopen");
-        exit(EXIT_FAILURE);
+        printf("No se pudo encontrar el archivo del hash para fopen");
+        exit(3);
     }
 
+    // loading the whole document
     while(fgets(buffer, 20, file) != NULL){
         token = strtok(buffer,",");
         key = atoi(token);
@@ -54,41 +64,33 @@ void loadHash(HashTable* hash){
 }
 
 /**
- * The function searchInFile is used to search the file pointer in the HashTable and
- * find the mean travel time in the file
+ * The function searchData is used to traverse the file and get the needed information
  * @param table is the Hash Table to make process faster
+ * @param file is the pointer to the data file
  * @param source is the id of the sorce zone of the travel
  * @param dest is the id of the destination zone of the travel
  * @param hour is the hour of the day where the travel start
  * @return the mean time for the given data
 */
-int searchInFile(HashTable* table, int source, int dest, int hour){
-    FILE* file = fopen("lib/data/data.txt", "r");
+int searchData(HashTable* table, FILE* file, int source, int dest, int hour){
+    // Creating the needed variables
     int check, src, dst, time, mean_time;
     char buffer[30];
     char* token;
-
-    if (file == NULL){
-        perror("No se pudo encontrar el archivo para fopen");
-        exit(EXIT_FAILURE);
-    }
-
-    if (!exist(table,source)){
-        perror("No se encontro el id de destino en la Hash Table");
-        exit(EXIT_FAILURE);
-    }
-
+    
+    // Extracting the file pointer from the hash table
     long int pointer = get(table, source);
-
     if (pointer < 0) return -1;
 
+    // Moving the pointer in the file where needed
     check = fseek(file, pointer, SEEK_SET);
 
     if (check < 0){
-        perror("No se pudo desplazar el puntero con fseek");
-        exit(EXIT_FAILURE);
+        printf("No se pudo desplazar el puntero con fseek");
+        exit(6);
     }
 
+    // Traversing the data until source id change or mean_time was finded
     while (fgets(buffer, 30, file) != NULL){
         token = strtok(buffer,",");
         src = atoi(token);
@@ -105,6 +107,34 @@ int searchInFile(HashTable* table, int source, int dest, int hour){
 }
 
 /**
+ * The function searchInFile is used to search the file pointer in the HashTable and
+ * find the mean travel time in the file
+ * @param table is the Hash Table to make process faster
+ * @param source is the id of the sorce zone of the travel
+ * @param dest is the id of the destination zone of the travel
+ * @param hour is the hour of the day where the travel start
+ * @return the mean time for the given data
+*/
+int searchInFile(HashTable* table, int source, int dest, int hour){
+    // Pointer to the data file
+    FILE* file = fopen("lib/data/data.txt", "r");
+
+    // Creating other needed variables
+    int check, src, dst, time, mean_time;
+    char buffer[30];
+    char* token;
+
+    // Checking if data file exists
+    if (file == NULL){
+        printf("No se pudo encontrar el archivo para fopen");
+        exit(4);
+    }
+
+    // Searching the data in the file
+    return searchData(table,file,source,dest,hour);
+}
+
+/**
  * The function childrenFunction is used to generate a new process that will search
  * for the average travel time into the document
  * @param pipeWrite where the process will send info to the other process
@@ -114,12 +144,13 @@ void childrenFunction(int pipeWrite, int pipeRead){
     // Allocating the needed memory
     HashTable* table = initHash();
     int source, destiny, time, check, data;
-    bool exit = false;
+    bool exitVar = false;
 
+    // Loading the hash data into new Hash Table
     loadHash(table);
 
     // Generaing a loop for keep the program runing until the user stops it
-    while(!exit){
+    while(!exitVar){
         // Receiving the data from the user to search
         read(pipeRead, &source, sizeof(int));
         read(pipeRead, &destiny, sizeof(int));
@@ -134,7 +165,7 @@ void childrenFunction(int pipeWrite, int pipeRead){
         read (pipeRead, &check, sizeof(int));
 
         if (check == -1)
-            exit = true;
+            exit(0);
     }
 }
 
@@ -146,13 +177,13 @@ void childrenFunction(int pipeWrite, int pipeRead){
 */
 void parentFunction(int pipeWrite, int pipeRead){
     // Allocating the needed memory
-    bool exit = false;
+    bool exitVar = false;
     int data;
     
     display_welcome();
 
     // Generaing a loop for keep the program runing until the user stops it
-    while (!exit){
+    while (!exitVar){
         // Getting data from user and sending it to searching process
         data = input_source_ID();
         write(pipeWrite, &data, sizeof(data));
@@ -164,7 +195,7 @@ void parentFunction(int pipeWrite, int pipeRead){
         // Waiting for responce from the child process
         system("clear");
         printf("procesando, espere un momento ...\n");
-        int time;
+        int time = -1;
         read(pipeRead, &time, sizeof(int));
 
         // Printing the mean time founded or the notFound error
@@ -172,9 +203,9 @@ void parentFunction(int pipeWrite, int pipeRead){
         output_mean_time(time);
 
         // Asking if the user want to find another value
-        exit = exitProgram();
+        exitVar = exitProgram();
         
-        if (exit){
+        if (exitVar){
             data = -1;
             write(pipeWrite, &data, sizeof(data));
         }
@@ -183,6 +214,8 @@ void parentFunction(int pipeWrite, int pipeRead){
             write(pipeWrite, &data, sizeof(data));
         }
     }
+
+    exit(0);
 }
 
 /**
@@ -192,7 +225,7 @@ void parentFunction(int pipeWrite, int pipeRead){
 void startProgram(){
     // Creating all the memory for the forks and pipes
     int pipesPointers[2], parentPipes[2], childrenPipes[2];
-    pid_t processId;
+    pid_t processId = 0;
     
     // Creating pipes and forks
     pipesPointers[0] = pipe(parentPipes);
@@ -206,7 +239,7 @@ void startProgram(){
         close(parentPipes[1]);
         childrenFunction(childrenPipes[1], parentPipes[0]);
     }
-    else{
+    else if (processId > 0){
         close(childrenPipes[1]);
         close(parentPipes[0]);
         parentFunction(parentPipes[1], childrenPipes[0]);

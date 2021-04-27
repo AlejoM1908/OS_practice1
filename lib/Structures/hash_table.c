@@ -84,8 +84,8 @@ int hashCode(HashTable* hash, int key){
  * @param hash is a pointer to the Hash table we want to apply the function to
  * @return a value to be compared with MAX_LOAD_FACTOR
 */
-long loadFactor(HashTable* hash){
-    return (long) hash -> size / (long) (hash -> cardinality);
+float loadFactor(HashTable* hash){
+    return (float) hash -> size / (float) (hash -> cardinality);
 }
 
 /**
@@ -164,7 +164,6 @@ void insert(HashTable* hash, int key, int data){
         rehash(hash);
         
     addNode(hash, key, data);
-
 }
 
 /**

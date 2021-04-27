@@ -5,6 +5,10 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+/**
+ * The function clear_stream is used to clear the pointer when scanf function is used
+ * @param in is a pointer to a document
+*/
 void clear_stream(FILE *in)
 {
     int ch;
@@ -31,6 +35,7 @@ void display_welcome()
 /**
  * The function input_source_ID is used to stock the source id and compare if is
  *  valid to search
+ * @return the source ID typed by the user
 */
 int input_source_ID(){
     bool exit = false;
@@ -63,7 +68,7 @@ int input_source_ID(){
 /**
  * The function input_destiny_ID is used to stock the destiny id and compare if is
  * valid to search 
- *
+ * @return the destiny ID typed by the user
 */
 int input_destiny_ID()
 {
@@ -97,7 +102,7 @@ int input_destiny_ID()
 /**
  * The function input_daytime is used to store the time in which the trip will be
  * made and compare if is valid to search
- * 
+ * @return the hour typed by the user
 */
 int input_daytime()
 {
@@ -106,7 +111,7 @@ int input_daytime()
 
     while (!exit)
     {
-        printf("\nPor favor, ingrese La hora en que desea coger el transporte, en formato 24h:\n");
+        printf("\nPor favor, ingrese La hora en que desea tomar el transporte, en formato 24h:\n");
         
         if ((scanf("%d", &daytime) != 1))
         {
@@ -132,20 +137,18 @@ int input_daytime()
  * the function output_mean_time is used to showthe average time it will take to
  * make the journey
  * @param time to complete the journey
- * 
- * 
 */
 void output_mean_time(int time){
-    if (time > 0)
+    if (time >= 0)
         printf("La hora promedio del viaje es: %d\n", time);
     else
-        printf("No se pudo encontrar el timepo de viaje\n");
+        printf("No se pudo encontrar el tiempo de viaje\n");
 }
 
 /**
  * the funcition exitProgram is used to show the opctions for exit the program 
  * and compare the options select to user
- * 
+ * @return the selection of the user
 */
 bool exitProgram()
 {
