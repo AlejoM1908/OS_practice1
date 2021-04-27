@@ -51,15 +51,19 @@ void loadHash(HashTable* hash){
     }
 
     // loading the whole document
-    while(fgets(buffer, 20, file) != NULL){
-        token = strtok(buffer,",");
-        key = atoi(token);
-        token = strtok(NULL,",");
-        data = (long int) atoi(token);
+    for (int i = 0; i<4; i++){
+        while(fgets(buffer, 20, file) != NULL){
+            token = strtok(buffer,",");
+            key = atoi(token);
+            token = strtok(NULL,",");
+            data = (long int) atoi(token);
 
-        if (!exist(hash,key)){
-            insert(hash, key, data);
+            if (!exist(hash,key)){
+                insert(hash, key, data);
+            }
         }
+
+        fseek(file, 0, SEEK_SET);
     }
 }
 
