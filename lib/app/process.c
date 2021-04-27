@@ -164,8 +164,10 @@ void childrenFunction(int pipeWrite, int pipeRead){
         // Reading if the user stops the program
         read (pipeRead, &check, sizeof(int));
 
-        if (check == -1)
+        if (check == -1){
+            freeHash(table);
             exit(0);
+        }
     }
 }
 

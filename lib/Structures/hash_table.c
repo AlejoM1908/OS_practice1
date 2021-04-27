@@ -247,3 +247,17 @@ bool exist(HashTable* hash, int key){
     else
         return false;
 }
+
+/**
+ * The function freeHash is used to free the memory used by the HashTable
+ * @param hash is a pointer to the Hash table we want to apply the function to
+*/
+void freeHash(HashTable* hash){
+    int items = hash -> cardinality;
+
+    for (int i=items-1; i>=0; i--){
+        if (&(hash -> table[i]) != NULL) freeList(&(hash -> table[i]));
+    }
+
+    free(hash);
+}
