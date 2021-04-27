@@ -10,7 +10,7 @@
  * so it will automatically resize to assure constant time of operation
 */
 int const STARTING_SIZE = 10, PRIME_NUMBER = 47216891;
-long const MAX_LOAD_FACTOR = 0.67;
+float const MAX_LOAD_FACTOR = 0.67;
 
 /**
  * The Struct HashTable allows to create new dynamic Hash Tables

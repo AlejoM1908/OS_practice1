@@ -40,5 +40,7 @@ La solución debe ser capaz de:
 ## Participantes del desarrollo
 
 Gabriel Santana Paredes (gsantana@unal.edu.co)
+
 Diego Esteban Morales (dimorales@unal.edu.co)
+
 Daniel Alejandro Melo (dmelo@unal.edu.co)
